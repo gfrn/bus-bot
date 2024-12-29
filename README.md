@@ -11,6 +11,7 @@ Slack bot for obtaining Oxfordshire bus information
 - *SQL_DATABASE_URL* - SQL database URL. For example: `postgresql+psycopg://bus_bot_admin:test_pass@127.0.0.1:5432/bus_bot`
 - *SLACK_BOT_TOKEN* - Slack bot token
 - *SLACK_APP_TOKEN* - Slack app token
+- *ATCO_PREFIX* - ATCO prefix for the bus stops you want to monitor. Default is 340 (Oxfordshire)
 
 ## Running
 
@@ -25,5 +26,5 @@ Slack bot for obtaining Oxfordshire bus information
 - [ ] Use modal for creating alerts (requires HTTP mode)
 - [ ] Allow user to only trigger alerts on certain weekdays
 - [ ] Alert user if bus is not being tracked
-- [ ] Create script to parse ATCO/NAPTAN bus stop listing from CSV file
+- [x] Create script to parse ATCO/NAPTAN bus stop listing from CSV file
 - [ ] Create tests

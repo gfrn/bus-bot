@@ -60,7 +60,7 @@ class Stop(Base):
     alerts: Mapped[List["Alert"]] = relationship(back_populates="stop")
 
 
-async def async_main() -> None:
+async def sync_db() -> None:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     await engine.dispose()

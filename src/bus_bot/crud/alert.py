@@ -71,3 +71,4 @@ async def update_alert(alert_id: int):
             .values({"lastAlerted": datetime.now()})
         )
         await session.commit()
+

@@ -4,13 +4,14 @@ from slack_bolt.async_app import AsyncApp
 from slack_bolt.adapter.socket_mode.async_handler import AsyncSocketModeHandler
 from datetime import datetime
 
-from bus_bot.models.responses import Call, StopUpdate
+from .models.responses import Call, StopUpdate
+from .utils.stops import populate_stops
 
 from .utils.events import Periodic
 
 from .crud.alert import delete_alert, get_alerts, insert_alert, update_alert
 import asyncio
-from .models.database import async_main
+from .models.database import sync_db
 
 TOKEN = os.environ.get("SLACK_BOT_TOKEN")
 
@@ -113,11 +114,13 @@ async def send_alerts():
 
 
 async def main():
+    await sync_db()
+    await populate_stops()
+
     handler = AsyncSocketModeHandler(app, os.environ["SLACK_APP_TOKEN"])
     alert_loop = Periodic(send_alerts, 60)
     await alert_loop.start()
 
-    await async_main()
     await handler.start_async()
 
 
