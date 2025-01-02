@@ -64,11 +64,11 @@ async def subscribe_to_stop(ack, respond, command):
     try:
         time = datetime.strptime(time_str, "%H:%M").time()
         await insert_alert(command["channel_id"], naptan, time, line)
+        await respond(
+            f"Successfully registered alert for *{line}* at *{naptan}* at *{time_str}*"
+        )
     except ValueError:
         await respond("Invalid time provided. Time must be formatted as HH:MM")
-        return
-
-    await respond(f"Successfully registered alert for *{naptan}* at *{time_str}*")
 
 
 async def send_alerts():
@@ -99,16 +99,21 @@ async def send_alerts():
                         for call in last_update.calls
                         if call.route_code == alert.line
                     )
-                except StopIteration:
-                    last_call = None
 
-            if last_call:
-                await app.client.chat_postMessage(
-                    channel=alert.user,
-                    token=TOKEN,
-                    markdown=True,
-                    text=f"*{alert.line}* arriving in *{last_call.time_to_arrival} min* at {alert.stop.name}",
-                )
+                    await app.client.chat_postMessage(
+                        channel=alert.user,
+                        token=TOKEN,
+                        markdown=True,
+                        text=f"*{alert.line}* arriving in *{last_call.time_to_arrival} min* at {alert.stop.name} (*{alert.atco}*)",
+                    )
+                except StopIteration:
+                    await app.client.chat_postMessage(
+                        channel=alert.user,
+                        token=TOKEN,
+                        markdown=True,
+                        text=f"*{alert.line}* not present in timetable at *{alert.stop.name}* (*{alert.atco}*)! Bus could be delayed or cancelled.",
+                    )
+                    last_call = None
 
             await update_alert(alert_id=alert.id)
 

@@ -19,12 +19,17 @@ Slack bot for obtaining Oxfordshire bus information
 - Set environment variables
 - Run bot with `python3 -m bus_bot`
 
+## Usage (user)
+
+- Get your ATCO code from https://oxontime.com/home by clicking a bus stop, and copying the SMS code (starts with `oxf`)
+- Register a new alert with /register [bus stop] [bus line] [time]
+
 ## TODO
 
 - [ ] Enable HTTP mode
 - [ ] Add buttons to delete alerts (requires HTTP mode)
 - [ ] Use modal for creating alerts (requires HTTP mode)
 - [ ] Allow user to only trigger alerts on certain weekdays
-- [ ] Alert user if bus is not being tracked
+- [x] Alert user if bus is not being tracked
 - [x] Create script to parse ATCO/NAPTAN bus stop listing from CSV file
 - [ ] Create tests

@@ -1,4 +1,3 @@
-
 import os
 from typing import List
 
@@ -10,6 +9,7 @@ from ..models.database import async_session
 
 ATCO_PREFIX = os.environ.get("ATCO_PREFIX", "340")
 
+
 async def populate_stops():
     """Get all bus stops, parse data, and push to database"""
 
@@ -20,22 +20,20 @@ async def populate_stops():
         if stop_count is not None and stop_count > 0:
             # TODO: log when this happens
             return
-    
+
     stops: List[Stop] = []
     async with aiohttp.ClientSession() as http_session:
         async with http_session.get(
-                f"https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv&atcoAreaCodes={ATCO_PREFIX}"
-            ) as resp:
-                resp_csv = await resp.text()
-    
+            f"https://naptan.api.dft.gov.uk/v1/access-nodes?dataFormat=csv&atcoAreaCodes={ATCO_PREFIX}"
+        ) as resp:
+            resp_csv = await resp.text()
+
     resp_rows = [row.split(",") for row in resp_csv.split("\n")[1:]]
 
     for row in resp_rows:
         if len(row) == 43 and row[42] == "active" and row[1] != "":
             stops.append(Stop(atco=row[0], naptan=row[1], name=row[4]))
-    
+
     async with async_session() as session:
         session.add_all(stops)
         await session.commit()
-                
-    
